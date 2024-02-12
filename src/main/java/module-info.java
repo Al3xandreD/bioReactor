@@ -10,6 +10,7 @@ module org.openjfx.bioreactor {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
+    requires org.apache.poi.poi;
 
     opens org.openjfx.bioreactor to javafx.fxml;
     exports org.openjfx.bioreactor;
