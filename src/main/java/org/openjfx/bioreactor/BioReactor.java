@@ -32,8 +32,8 @@ public class BioReactor {
     /** ph mesurée*/
     private double phMes=0;
 
-    private int indexRow;
-    private int indexCell;
+    private int indexRow=6;
+    private int indexCell=0;
 
     private Sheet firstSheet;
 
@@ -60,13 +60,12 @@ public class BioReactor {
 
     }
 
-    private void readingFile(){
-        this.tempMes = firstSheet.getRow(6).getCell(1).getNumericCellValue();
-        this.tempCons= firstSheet.getRow(6).getCell(14).getNumericCellValue();
-        this.tempComm= firstSheet.getRow(6).getCell(15).getNumericCellValue();
-        this.oxyMes=firstSheet.getRow(6).getCell(16).getNumericCellValue();
-        this.phMes=firstSheet.getRow(6).getCell(19).getNumericCellValue();
-        indexCell++;
+    public void readingFile(){
+        this.tempMes = firstSheet.getRow(indexRow).getCell(1).getNumericCellValue();
+        this.tempCons= firstSheet.getRow(indexRow).getCell(14).getNumericCellValue();
+        this.tempComm= firstSheet.getRow(indexRow).getCell(15).getNumericCellValue();
+        this.oxyMes=firstSheet.getRow(indexRow).getCell(16).getNumericCellValue();
+        this.phMes=firstSheet.getRow(indexRow).getCell(19).getNumericCellValue();
         indexRow++;
     }
 
