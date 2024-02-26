@@ -5,7 +5,7 @@ import java.util.TimerTask;
 
 public class MainReactor {
     public static void main(String[] args) {
-        int i;
+        int i;  //
         long delay=5000;
         long period=5000;
         BioReactor myreac=new BioReactor();
