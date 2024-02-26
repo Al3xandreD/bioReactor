@@ -7,7 +7,7 @@ public class MainReactor {
     public static void main(String[] args) {
         int i;
         long delay=5000;
-        long period=100;
+        long period=5000;
         BioReactor myreac=new BioReactor();
         String my_string=myreac.toString();
         System.out.println(my_string);
