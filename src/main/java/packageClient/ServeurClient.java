@@ -10,7 +10,6 @@ import java.net.UnknownHostException;
 
 /** Représente un serveur TCP client*/
 public class ServeurClient {
-
     int numeroPort;
     private String nomServeur;
 

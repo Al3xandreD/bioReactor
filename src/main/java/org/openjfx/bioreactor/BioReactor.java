@@ -6,26 +6,36 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
+import packageClient.ServeurClient;
+
 import java.io.File;
 
 /** Représente un jumeau numérique de bio réacteur */
 public class BioReactor {
     private ArrayList<ServeurTCP> serveurTCPS=new ArrayList<>();
 
+    /** numero de port*/
+    private int numPort=6666;
+
     /** température mesurée*/
-    private float tempMes=0;
+    private double tempMes=0;
 
     /** température en consigne*/
-    private float tempCons=0;
+    private double tempCons=0;
 
     /** température en commande*/
-    private float tempComm=0;
+    private double tempComm=0;
 
     /** oxygène mesurée */
-    private float oxyMes=0;
+    private double oxyMes=0;
 
     /** ph mesurée*/
-    private float phMes=0;
+    private double phMes=0;
+
+    private int indexRow;
+    private int indexCell;
+
+    private Sheet firstSheet;
 
     public BioReactor() {
 
@@ -34,23 +44,48 @@ public class BioReactor {
             InputStream inputStream = new FileInputStream(excelFilePath);
 
             Workbook myWb = new XSSFWorkbook(inputStream);  //new workbook
-            Sheet firstSheet = myWb.getSheetAt(0);  //only sheet
+            firstSheet = myWb.getSheetAt(0);  //only sheet
 
             // retrieving data
-            this.tempMes = Float.parseFloat(firstSheet.getRow(1).getCell(7).getStringCellValue());
-
-            //this.tempCons = tempCons;
-//        this.tempComm = tempComm;
-//        this.oxyMes = oxyMes;
-//        this.phMes = phMes;
-            System.out.println(this.tempMes);
+            this.tempMes = firstSheet.getRow(6).getCell(1).getNumericCellValue();
+            this.tempCons= firstSheet.getRow(6).getCell(14).getNumericCellValue();
+            this.tempComm= firstSheet.getRow(6).getCell(15).getNumericCellValue();
+            this.oxyMes=firstSheet.getRow(6).getCell(16).getNumericCellValue();
+            this.phMes=firstSheet.getRow(6).getCell(19).getNumericCellValue();
 
         } catch (IOException e){
+            System.out.println("pas ouvert");
             e.printStackTrace();
         }
 
     }
 
-    public void initReactor(){
+    private void readingFile(){
+        this.tempMes = firstSheet.getRow(6).getCell(1).getNumericCellValue();
+        this.tempCons= firstSheet.getRow(6).getCell(14).getNumericCellValue();
+        this.tempComm= firstSheet.getRow(6).getCell(15).getNumericCellValue();
+        this.oxyMes=firstSheet.getRow(6).getCell(16).getNumericCellValue();
+        this.phMes=firstSheet.getRow(6).getCell(19).getNumericCellValue();
+        indexCell++;
+        indexRow++;
+    }
+
+    public void openReactor(){
+        this.serveurTCPS.add(new ServeurTCP(numPort, 10));
+        for (ServeurTCP s: serveurTCPS){
+            s.start();
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "BioReactor{" +
+                "serveurTCPS=" + serveurTCPS +
+                ", tempMes=" + tempMes +
+                ", tempCons=" + tempCons +
+                ", tempComm=" + tempComm +
+                ", oxyMes=" + oxyMes +
+                ", phMes=" + phMes +
+                '}';
     }
 }
