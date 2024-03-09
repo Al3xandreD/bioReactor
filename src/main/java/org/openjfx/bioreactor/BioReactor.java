@@ -6,9 +6,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
-import packageClient.ServeurClient;
 
 import java.io.File;
+import java.util.TimerTask;
 
 /** Représente un jumeau numérique de bio réacteur */
 public class BioReactor {
@@ -44,7 +44,7 @@ public class BioReactor {
             InputStream inputStream = new FileInputStream(excelFilePath);
 
             Workbook myWb = new XSSFWorkbook(inputStream);  //new workbook
-            firstSheet = myWb.getSheetAt(0);  //only sheet
+            firstSheet = myWb.getSheetAt(0);  //only one sheet
 
             // retrieving data
             this.tempMes = firstSheet.getRow(6).getCell(1).getNumericCellValue();
@@ -60,7 +60,21 @@ public class BioReactor {
 
     }
 
+    public void openReactor(){
+        /**
+         * adds a TCP server to the bioreactor and starts it
+         */
+        this.serveurTCPS.add(new ServeurTCP(numPort, 10));
+        for (ServeurTCP s: serveurTCPS){
+            s.start();
+        }
+    }
+
     public void readingFile(){
+        /**
+         * Reads a row from the datafile according to a row index.
+         * Row index is then incremented.
+         */
         this.tempMes = firstSheet.getRow(indexRow).getCell(1).getNumericCellValue();
         this.tempCons= firstSheet.getRow(indexRow).getCell(14).getNumericCellValue();
         this.tempComm= firstSheet.getRow(indexRow).getCell(15).getNumericCellValue();
@@ -69,10 +83,13 @@ public class BioReactor {
         indexRow++;
     }
 
-    public void openReactor(){
-        this.serveurTCPS.add(new ServeurTCP(numPort, 10));
-        for (ServeurTCP s: serveurTCPS){
-            s.start();
+    public void transmit(){
+        /**
+         * Sends the state of the bioreactor to all TCP servers
+         * Sent data takes the form of a String, using toString() method
+         */
+        for (ServeurTCP s: serveurTCPS) {
+            s.send(this.toString());
         }
     }
 
@@ -86,5 +103,15 @@ public class BioReactor {
                 ", oxyMes=" + oxyMes +
                 ", phMes=" + phMes +
                 '}';
+    }
+
+
+    // getters and setters
+    public ArrayList<ServeurTCP> getServeurTCPS() {
+        return serveurTCPS;
+    }
+
+    public void setServeurTCPS(ArrayList<ServeurTCP> serveurTCPS) {
+        this.serveurTCPS = serveurTCPS;
     }
 }

@@ -25,6 +25,9 @@ public class ServeurClient {
     }
 
     public boolean connecterAuServeur() {
+        /**
+         * creates a socket connexion between a serveur and a client
+         */
         boolean ok = false;
         try {
             System.out.println("Tentative : " + nomServeur + " -- " + numeroPort);
@@ -46,6 +49,28 @@ public class ServeurClient {
         return ok;
     }
 
+    public String send (String msg_client){
+        /**
+         * Sends a String to the connected serveur
+         */
+        String msg_server=null;
+        try {
+            System.out.println("Requete client: "+msg_client); //sending
+            socOut.println(msg_client);
+            socOut.flush();
+
+            msg_server=socIn.readLine();
+            System.out.println("reponse serveur: "+msg_server); // receiving
+
+        }
+        catch (IOException e){
+            System.err.println("Exception entree/sortie:  " + e);
+            e.printStackTrace();
+        }
+
+        return msg_server;
+    }
+
     public void deconnecterDuServeur() {
         try {
             System.out.println("[ClientTCP] CLIENT : " + socketServeur);
@@ -56,6 +81,5 @@ public class ServeurClient {
             System.err.println("Exception lors de la deconnexion :  " + e);
         }
     }
-
 
 }

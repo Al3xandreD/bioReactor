@@ -5,22 +5,21 @@ import java.util.TimerTask;
 
 public class MainReactor {
     public static void main(String[] args) {
-        int i;  //
-        long delay=5000;
-        long period=5000;
+        int i;
+
         BioReactor myreac=new BioReactor();
-        String my_string=myreac.toString();
-        System.out.println(my_string);
 
-        TimerTask timerTask=new TimerTask() {
-            @Override
-            public void run() {
-                myreac.readingFile();
-                System.out.println(myreac.toString());
+        // serveurs
+        myreac.openReactor();
+
+        // saving data to TCP servers
+        for(i=0; i<=5812;i++){
+            myreac.readingFile();
+            for(ServeurTCP s: myreac.getServeurTCPS()){
+                s.saveData(myreac.toString());
             }
-        };
-
-        Timer timer=new Timer();
-        timer.schedule(timerTask,delay, period);
+        }
+        System.out.println("Data was sent from bioreactor to all tcps");
+        //System.out.println(myreac.getServeurTCPS().get(0).getHardDrive().toString());
     }
 }
