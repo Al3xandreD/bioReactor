@@ -40,7 +40,7 @@ public class BioReactor {
     public BioReactor() {
 
         try {
-            String excelFilePath = "/Users/alexandredermouche/Documents/Alexandre /Cours/ENSTA/2A/STIC/conception logicielle/bioReactor/src/main/java/2022-10-03-Act2-1.xlsx";
+            String excelFilePath = "2022-10-03-Act2-1.xlsx";
             InputStream inputStream = new FileInputStream(excelFilePath);
 
             Workbook myWb = new XSSFWorkbook(inputStream);  //new workbook
