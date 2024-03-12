@@ -2,6 +2,7 @@ package org.openjfx.bioreactor;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -27,8 +28,6 @@ public class ServeurTCP extends Thread {
 
     /** Numéro de port d'ecoute */
     private int numeroPort;
-    private PrintStream socOut;
-    private BufferedReader socIn;
 
     private boolean hasClient=false;
 
@@ -42,10 +41,13 @@ public class ServeurTCP extends Thread {
         String msg_client=null;
         String chain_client="";
         int index_request=0;
+
         // initialisation
         ServerSocket serverSocket=null; //necessaire car si fail initialisation, pas de serveurSocket pour la while
         try {
             serverSocket = new ServerSocket(numeroPort);
+//            socOut = new PrintStream(serverSocket.getOutputStream());
+//            socIn = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
         }
         catch (IOException e) {
             System.out.println("Could not listen on port: " + numeroPort + ", " + e);
@@ -58,17 +60,25 @@ public class ServeurTCP extends Thread {
                 System.out.println(" Attente du serveur pour la communication d'un client ");
                 clientSocket = serverSocket.accept();
                 nbConnexions++;
-                hasClient=true;
+
+                ConnectedClientThread st = new ConnectedClientThread( clientSocket , this );
+                st.start();
+
                 System.out.println("Nb automates : " + nbConnexions);
 
                 // test to see if request of state from client
+
                 msg_client=socIn.readLine();
                 if(msg_client!=null){ // message receive from client
                     chain_client+=msg_client;
                     msg_client=socIn.readLine();
+                    System.out.println("envoie des données");
+                    System.out.println(msg_client);
                 }
-                if(chain_client=="state_bio_reactor"){
-                    this.send(this.hardDrive.get(index_request));   //sending data from harddrive to tcp clients
+                if(chain_client.equals("state_bio_reactor")){
+                    //System.out.println("envoie des données");
+                    //this.send(this.hardDrive.get(index_request));   //sending data from harddrive to tcp clients
+
                     index_request++;
                 }
             }
@@ -76,6 +86,7 @@ public class ServeurTCP extends Thread {
                 System.out.println("Accept failed: " + serverSocket.getLocalPort() + ", " + e);
                 System.exit(1);
             }
+
         }
         System.out.println("Deja " + nbConnexions + " clients. Maximum autorisé atteint");
 
@@ -93,14 +104,6 @@ public class ServeurTCP extends Thread {
          * saves the data in the hard drive
          */
         this.hardDrive.add(incoming);
-    }
-
-    public void send(String msg){
-
-        System.out.println("Requete client: "+msg);
-        socOut.println(msg);
-        socOut.flush();
-
     }
 
     @Override

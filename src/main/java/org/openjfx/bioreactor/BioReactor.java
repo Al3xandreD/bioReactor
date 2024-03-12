@@ -83,15 +83,15 @@ public class BioReactor {
         indexRow++;
     }
 
-    public void transmit(){
-        /**
-         * Sends the state of the bioreactor to all TCP servers
-         * Sent data takes the form of a String, using toString() method
-         */
-        for (ServeurTCP s: serveurTCPS) {
-            s.send(this.toString());
-        }
-    }
+//    public void transmit(){
+//        /**
+//         * Sends the state of the bioreactor to all TCP servers
+//         * Sent data takes the form of a String, using toString() method
+//         */
+//        for (ServeurTCP s: serveurTCPS) {
+//            s.send(this.toString());
+//        }
+//    }
 
     @Override
     public String toString() {

@@ -20,6 +20,5 @@ public class MainReactor {
             }
         }
         System.out.println("Data was sent from bioreactor to all tcps");
-        //System.out.println(myreac.getServeurTCPS().get(0).getHardDrive().toString());
     }
 }
