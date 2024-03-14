@@ -29,9 +29,11 @@ public class ServeurTCP extends Thread {
     /** Numéro de port d'ecoute */
     private int numeroPort;
 
-    private boolean hasClient=false;
+    /** Représente un protocole de communication*/
+    private IProtocole protocole;
 
-    public ServeurTCP(int numeroPort, int maxConnexions){
+    public ServeurTCP(IProtocole protocole, int numeroPort, int maxConnexions){
+        this.protocole=protocole;
         this.numeroPort=numeroPort;
         this.maxConnexions=maxConnexions;
     }
@@ -68,19 +70,18 @@ public class ServeurTCP extends Thread {
 
                 // test to see if request of state from client
 
-                msg_client=socIn.readLine();
-                if(msg_client!=null){ // message receive from client
-                    chain_client+=msg_client;
-                    msg_client=socIn.readLine();
-                    System.out.println("envoie des données");
-                    System.out.println(msg_client);
-                }
-                if(chain_client.equals("state_bio_reactor")){
-                    //System.out.println("envoie des données");
-                    //this.send(this.hardDrive.get(index_request));   //sending data from harddrive to tcp clients
-
-                    index_request++;
-                }
+//                msg_client=socIn.readLine();
+//                if(msg_client!=null){ // message receive from client
+//                    chain_client+=msg_client;
+//                    msg_client=socIn.readLine();
+//                    System.out.println("envoie des données");
+//                    System.out.println(msg_client);
+//                }
+//                if(chain_client.equals("state_bio_reactor")){
+//                    //System.out.println("envoie des données");
+//                    //this.send(this.hardDrive.get(index_request));   //sending data from harddrive to tcp clients
+//                    index_request++;
+//                }
             }
             catch (IOException e) {
                 System.out.println("Accept failed: " + serverSocket.getLocalPort() + ", " + e);
@@ -109,6 +110,17 @@ public class ServeurTCP extends Thread {
     @Override
     public String toString(){
         return "[ServeurTCP] Port : " + numeroPort+" Nombre de connexions"+nbConnexions+" Connecté au client"+clientSocket;
+    }
+
+    // getters and setters
+
+
+    public IProtocole getProtocole() {
+        return protocole;
+    }
+
+    public void setProtocole(IProtocole protocole) {
+        this.protocole = protocole;
     }
 
     public ArrayList<String> getHardDrive() {

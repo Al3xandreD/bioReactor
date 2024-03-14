@@ -11,7 +11,6 @@ public class Visionneur {
     private ArrayList<String> hardDrive=new ArrayList<>();  // hard drive for storing data from tcp serveur
 
     public Visionneur() {
-        this.port = port;
         this.serveurClient=new ServeurClient("localhost", port);
     }
 

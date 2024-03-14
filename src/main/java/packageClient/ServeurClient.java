@@ -53,14 +53,20 @@ public class ServeurClient {
         /**
          * Sends a String to the connected serveur
          */
-        String msg_server=null;
+        String msgServeur=null;
+        String chaineRetour = "";
         try {
             System.out.println("Requete client: "+msg_client); //sending
             socOut.println(msg_client);
             socOut.flush();
 
-            msg_server=socIn.readLine();
-            System.out.println("reponse serveur: "+msg_server); // receiving
+            msgServeur = socIn.readLine();
+            while( msgServeur != null && msgServeur.length() >0) {
+                chaineRetour += msgServeur + "\n";
+                msgServeur = socIn.readLine();
+            }
+            System.out.println("Réponse serveur: " + chaineRetour);
+
 
         }
         catch (IOException e){
@@ -68,7 +74,7 @@ public class ServeurClient {
             e.printStackTrace();
         }
 
-        return msg_server;
+        return chaineRetour;
     }
 
     public void deconnecterDuServeur() {
