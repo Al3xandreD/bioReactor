@@ -16,8 +16,6 @@ import java.util.ArrayList;
 
 public class ServeurTCP extends Thread {
 
-    private ArrayList<String> hardDrive=new ArrayList<>();  // hard drive for storing data from tcp serveur
-
     private static int nbConnexions = 0;
 
     /** Maximum de connexions client autorisées */
@@ -51,8 +49,6 @@ public class ServeurTCP extends Thread {
         ServerSocket serverSocket=null; //necessaire car si fail initialisation, pas de serveurSocket pour la while
         try {
             serverSocket = new ServerSocket(numeroPort);
-//            socOut = new PrintStream(serverSocket.getOutputStream());
-//            socIn = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
         }
         catch (IOException e) {
             System.out.println("Could not listen on port: " + numeroPort + ", " + e);
@@ -89,13 +85,6 @@ public class ServeurTCP extends Thread {
         }
     }
 
-    public void saveData(String incoming){
-        /**
-         * saves the data in the hard drive
-         */
-        this.hardDrive.add(incoming);
-    }
-
     @Override
     public String toString(){
         return "[ServeurTCP] Port : " + numeroPort+" Nombre de connexions"+nbConnexions+" Connecté au client"+clientSocket;
@@ -110,14 +99,6 @@ public class ServeurTCP extends Thread {
 
     public void setProtocole(IProtocole protocole) {
         this.protocole = protocole;
-    }
-
-    public ArrayList<String> getHardDrive() {
-        return hardDrive;
-    }
-
-    public void setHardDrive(ArrayList<String> hardDrive) {
-        this.hardDrive = hardDrive;
     }
 
     public IContext getContext() {

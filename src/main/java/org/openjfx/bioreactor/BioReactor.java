@@ -78,7 +78,7 @@ public class BioReactor {
         indexRow++;
     }
 
-    public void transmit(ArrayList<ServeurTCP> serveurTCPS){
+    public void transmit(Computer computer){
         /**
          * Sends the state of the bioreactor to all TCP servers
          * Sent data takes the form of a String, using toString() method
@@ -86,12 +86,11 @@ public class BioReactor {
         int i;
         for(i=0; i<=5812;i++){
             this.readingFile();
-            for(ServeurTCP s: serveurTCPS){
-                s.saveData(this.toString());
+            computer.saveData(this.toString());
             }
-        System.out.println("Data was sent from bioreactor to all tcps");
+        System.out.println("Data was sent from bioreactor to all commputerBios");
         }
-    }
+
 
     @Override
     public String toString() {
