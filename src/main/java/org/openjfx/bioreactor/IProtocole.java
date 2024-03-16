@@ -5,6 +5,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public interface IProtocole {
-    public abstract void execute(InputStream is, OutputStream os, Computer computer);
+    public abstract void execute(InputStream is, OutputStream os, IContext c);
 
 }

@@ -2,9 +2,16 @@ package org.openjfx.bioreactor;
 
 import java.io.*;
 
+/**
+ * Implements the interface IProtocole for sending the data from the computers' serveurs associated to the bioreactor
+ * to the clients
+ */
+
 public class ProtocoleSendState implements IProtocole{
     @Override
-    public void execute(InputStream inputStream, OutputStream outputStream, Computer computer) {
+    public void execute(InputStream inputStream, OutputStream outputStream, IContext c) {
+
+        Computer computer=(Computer) c; //TODO:comprendre
         String inputReq;
         String msg_client;
         String chain_client=null;
@@ -27,16 +34,15 @@ public class ProtocoleSendState implements IProtocole{
                     System.out.println("Received from client: "+ chain_client);
                 }
             assert chain_client != null;
-            if(chain_client.equals("state_bio_reactor")){
+            if(chain_client.equals("state_bio_reactor")) {
                 System.out.println("envoie des données");
-                os.println(computer.);
-                this.send(this.hardDrive.get(index_request));   //sending data from harddrive to tcp clients
-                    index_request++;
-                }
+                os.println(computer.getHardDrive().get(computer.getIndexRequest()));
+                os.flush();//sending data to client
+                computer.setIndexRequest(computer.getIndexRequest() + 1);
 
-            //clientSocket.close();
-            os.close();
-            is.close();
+                os.close();
+                is.close();
+            }
 
         } catch (IOException e) {
             e.printStackTrace();

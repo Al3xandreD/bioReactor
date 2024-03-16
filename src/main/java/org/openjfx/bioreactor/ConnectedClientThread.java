@@ -18,7 +18,7 @@ public class ConnectedClientThread extends Thread {
     public void run() {
 
         try {
-            myServer.getProtocole().execute(clientSocket.getInputStream(), clientSocket.getOutputStream(), );
+            myServer.getProtocole().execute(clientSocket.getInputStream(), clientSocket.getOutputStream(), myServer.getContext());
             System.out.println("Protocol SendSate done");
         } catch (IOException e) {
             System.err.println("[Protocol SendState] Exception : " + e);

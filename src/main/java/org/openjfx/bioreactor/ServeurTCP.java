@@ -32,8 +32,11 @@ public class ServeurTCP extends Thread {
     /** Représente un protocole de communication*/
     private IProtocole protocole;
 
-    public ServeurTCP(IProtocole protocole, int numeroPort, int maxConnexions){
+    private IContext context;
+
+    public ServeurTCP(IProtocole protocole, IContext context,int numeroPort, int maxConnexions){
         this.protocole=protocole;
+        this.context=context;
         this.numeroPort=numeroPort;
         this.maxConnexions=maxConnexions;
     }
@@ -68,20 +71,6 @@ public class ServeurTCP extends Thread {
 
                 System.out.println("Nb automates : " + nbConnexions);
 
-                // test to see if request of state from client
-
-//                msg_client=socIn.readLine();
-//                if(msg_client!=null){ // message receive from client
-//                    chain_client+=msg_client;
-//                    msg_client=socIn.readLine();
-//                    System.out.println("envoie des données");
-//                    System.out.println(msg_client);
-//                }
-//                if(chain_client.equals("state_bio_reactor")){
-//                    //System.out.println("envoie des données");
-//                    //this.send(this.hardDrive.get(index_request));   //sending data from harddrive to tcp clients
-//                    index_request++;
-//                }
             }
             catch (IOException e) {
                 System.out.println("Accept failed: " + serverSocket.getLocalPort() + ", " + e);
@@ -129,5 +118,13 @@ public class ServeurTCP extends Thread {
 
     public void setHardDrive(ArrayList<String> hardDrive) {
         this.hardDrive = hardDrive;
+    }
+
+    public IContext getContext() {
+        return context;
+    }
+
+    public void setContext(IContext context) {
+        this.context = context;
     }
 }
