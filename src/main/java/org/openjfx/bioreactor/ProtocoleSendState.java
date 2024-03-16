@@ -25,7 +25,7 @@ public class ProtocoleSendState implements IProtocole{
                 if(inputReq.contentEquals("state_bio_reactor")){
                     os.println(computer.getHardDrive().get(computer.getIndexRequest()));
                     os.flush();
-                    System.out.println("data sent");
+                    System.out.println("Protocol SendSate done");
                     computer.setIndexRequest(computer.getIndexRequest()+1);
                 }
 
