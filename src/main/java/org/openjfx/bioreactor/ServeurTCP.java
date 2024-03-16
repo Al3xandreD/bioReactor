@@ -41,9 +41,6 @@ public class ServeurTCP extends Thread {
 
     @Override
     public void run() {
-        String msg_client=null;
-        String chain_client="";
-        int index_request=0;
 
         // initialisation
         ServerSocket serverSocket=null; //necessaire car si fail initialisation, pas de serveurSocket pour la while
