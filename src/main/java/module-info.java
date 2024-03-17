@@ -16,4 +16,6 @@ module org.openjfx.bioreactor {
 
     opens org.openjfx.bioreactor to javafx.fxml;
     exports org.openjfx.bioreactor;
+    exports packageClient;
+    opens packageClient to javafx.fxml;
 }
