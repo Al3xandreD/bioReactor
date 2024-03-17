@@ -11,7 +11,11 @@ module org.openjfx.bioreactor {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
     requires org.apache.poi.poi;
+    requires org.apache.poi.ooxml;
+
 
     opens org.openjfx.bioreactor to javafx.fxml;
     exports org.openjfx.bioreactor;
+    exports packageClient;
+    opens packageClient to javafx.fxml;
 }

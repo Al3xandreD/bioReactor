@@ -10,7 +10,6 @@ import java.net.UnknownHostException;
 
 /** Représente un serveur TCP client*/
 public class ServeurClient {
-
     int numeroPort;
     private String nomServeur;
 
@@ -26,6 +25,9 @@ public class ServeurClient {
     }
 
     public boolean connecterAuServeur() {
+        /**
+         * creates a socket connexion between a serveur and a client
+         */
         boolean ok = false;
         try {
             System.out.println("Tentative : " + nomServeur + " -- " + numeroPort);
@@ -47,6 +49,34 @@ public class ServeurClient {
         return ok;
     }
 
+    public String send (String msg_client){
+        /**
+         * Sends a String to the connected serveur
+         */
+        String msgServeur=null;
+        String chaineRetour = "";
+        try {
+            System.out.println("Requete client: "+msg_client); //sending
+            socOut.println(msg_client);
+            socOut.flush();
+
+            msgServeur = socIn.readLine();
+            while( msgServeur != null && msgServeur.length() >0) {
+                chaineRetour += msgServeur + "\n";
+                msgServeur = socIn.readLine();
+            }
+            System.out.println("Réponse serveur: " + chaineRetour);
+
+
+        }
+        catch (IOException e){
+            System.err.println("Exception entree/sortie:  " + e);
+            e.printStackTrace();
+        }
+
+        return chaineRetour;
+    }
+
     public void deconnecterDuServeur() {
         try {
             System.out.println("[ClientTCP] CLIENT : " + socketServeur);
@@ -57,6 +87,5 @@ public class ServeurClient {
             System.err.println("Exception lors de la deconnexion :  " + e);
         }
     }
-
 
 }

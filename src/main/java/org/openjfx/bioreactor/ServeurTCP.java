@@ -1,58 +1,108 @@
+package org.openjfx.bioreactor;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
+
+
 /**
- * ServeurTCP est une classe qui gère le serveur TCP.
- * Elle possède une méthode startServer qui écoute en permanence les connexions entrantes et traite
- * les données à l'aide de la classe Bioreacteur. La méthode main dans
- * TCPServer est utilisée pour démarrer le serveur sur le port spécifié.
+ * Représente un serveur TCP, qui écoute sur un numéro de port
  *
- *
- * */
+ */
 
+public class ServeurTCP extends Thread {
 
-import org.openjfx.bioreactor.BioReactor;
+    private static int nbConnexions = 0;
 
-import java.io.*;
-import java.net.*;
+    /** Maximum de connexions client autorisées */
+    private int maxConnexions;
 
-public class ServeurTCP {
+    /** Socket du serveur client */
+    private Socket clientSocket;
 
-    private ServerSocket serverSocket;
+    /** Numéro de port d'ecoute */
+    private int numeroPort;
 
-    public ServeurTCP(int port) {
-        try {
-            serverSocket = new ServerSocket(port);
-            System.out.println("Serveur en attente de connexions sur le port " + port);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    /** Représente un protocole de communication*/
+    private IProtocole protocole;
+
+    private IContext context;
+
+    public ServeurTCP(IProtocole protocole, IContext context,int numeroPort, int maxConnexions){
+        this.protocole=protocole;
+        this.context=context;
+        this.numeroPort=numeroPort;
+        this.maxConnexions=maxConnexions;
     }
 
-    public void startServer() {
+    @Override
+    public void run() {
+
+        // initialisation
+        ServerSocket serverSocket=null; //necessaire car si fail initialisation, pas de serveurSocket pour la while
         try {
-            while (true) {
-                Socket clientSocket = serverSocket.accept();
-                System.out.println("Client connecté depuis " + clientSocket.getInetAddress());
+            serverSocket = new ServerSocket(numeroPort);
+        }
+        catch (IOException e) {
+            System.out.println("Could not listen on port: " + numeroPort + ", " + e);
+            System.exit(1);
+        }
 
-                // Créer une instance de la classe de traitement des données
-                BioReactor bioreacteur = new BioReactor();
+        // autorisation des connexions
+        while (nbConnexions <= maxConnexions) {
+            try {
+                System.out.println(" Attente du serveur pour la communication d'un client ");
+                clientSocket = serverSocket.accept();
+                nbConnexions++;
 
-                // Lire les données avec la classe de traitement des données
-                String data = BioReactor.readingFile();
+                ConnectedClientThread st = new ConnectedClientThread( clientSocket , this );
+                st.start();
 
-                // Envoyer les données au client
-                PrintWriter writer = new PrintWriter(clientSocket.getOutputStream(), true);
-                writer.println(data);
+                System.out.println("Nb automates : " + nbConnexions);
 
-                // Fermer les flux et la connexion avec le client
-                writer.close();
-                clientSocket.close();
             }
+            catch (IOException e) {
+                System.out.println("Accept failed: " + serverSocket.getLocalPort() + ", " + e);
+                System.exit(1);
+            }
+
+        }
+        System.out.println("Deja " + nbConnexions + " clients. Maximum autorisé atteint");
+
+        // closing when too many connexions
+        try {
+            serverSocket.close();
+            nbConnexions--;
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Could not close");
         }
     }
 
-    public static void main(String[] args) {
-        ServeurTCP tcpServer = new ServeurTCP(12345);
-        tcpServer.startServer();
+    @Override
+    public String toString(){
+        return "[ServeurTCP] Port : " + numeroPort+" Nombre de connexions"+nbConnexions+" Connecté au client"+clientSocket;
+    }
+
+    // getters and setters
+
+
+    public IProtocole getProtocole() {
+        return protocole;
+    }
+
+    public void setProtocole(IProtocole protocole) {
+        this.protocole = protocole;
+    }
+
+    public IContext getContext() {
+        return context;
+    }
+
+    public void setContext(IContext context) {
+        this.context = context;
     }
 }
