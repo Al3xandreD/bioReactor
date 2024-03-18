@@ -10,9 +10,6 @@ import org.apache.poi.ss.usermodel.*;
 /** Représente un jumeau numérique de bio réacteur */
 public class BioReactor {
 
-    /** numero de port*/
-    private int numPort=6666;
-
     /** température mesurée*/
     private double tempMes=0;
 
@@ -54,16 +51,6 @@ public class BioReactor {
         }
 
     }
-
-//    public void openReactor(){
-//        /**
-//         * adds a TCP server to the bioreactor and starts it
-//         */
-//        this.serveurTCPS.add(new ServeurTCP(new ProtocoleSendState(),numPort, 10));
-//        for (ServeurTCP s: serveurTCPS){
-//            s.start();
-//        }
-//    }
 
     public void readingFile(){
         /**

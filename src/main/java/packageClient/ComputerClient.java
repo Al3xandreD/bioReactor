@@ -2,9 +2,8 @@ package packageClient;
 
 import org.openjfx.bioreactor.Computer;
 
-import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.beans.PropertyChangeSupport;
+import java.util.*;
 
 /**
  * Simulates a computer to store the data in an hardDrive and send it to the ClientGUI
@@ -12,21 +11,31 @@ import java.util.TimerTask;
 public class ComputerClient extends Computer {
 
     private ServeurClient serveurClient;
-    private IRequestState strategyRequest;
+    private IRequestState strategyRequest;  //pattern strategy
+    private PropertyChangeSupport pcSupport;
 
     public ComputerClient(IRequestState strategyRequest) {
         super();
         this.serveurClient=new ServeurClient("localhost", port);
         this.strategyRequest=strategyRequest;
+
+        pcSupport=new PropertyChangeSupport(this);
     }
 
     public synchronized void start(){
         /**
          * Starting the request of states
          */
-       strategyRequest.requestS(this);
+        strategyRequest.requestS(this);
     }
 
+    // pattern observer
+    public PropertyChangeSupport getPropertyChangeSupport() {
+        return pcSupport;
+    }
+
+
+    //pattern strategy
     public void setStrategyRequest(String typeRequest) {
         if(typeRequest.equals("RequestTemporize")){
             strategyRequest=new RequestStateTemporize();
@@ -35,6 +44,7 @@ public class ComputerClient extends Computer {
             strategyRequest=new RequestStateComplete();
         }
     }
+
 
     // getters and setters
     public ServeurClient getServeurClient() {

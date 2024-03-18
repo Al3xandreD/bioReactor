@@ -1,0 +1,65 @@
+# projet bioReactor
+Le projet bioReactor a pour but de rendre compte de la simulation d'un bio-réacteur en fonctionnement.
+Les données sujets du bio-réacteur sont stockées dans un fichier .xlsx, elle sont extraite puis transmise à une interface graphique.
+
+# Structure des classes
+Afin de réaliser un code respectant les principes SOLID, plusieurs classes, classes abstreaites et interfaces ont été mises en place.
+Ces classes sont séparées dans 2 packages, le package org.openjf.bioreactor qui représente la partie bio-réacteur du système.
+Et le package packageClient, qui représente le système côté client.
+
+    - Description du package bioreactor:
+
+    La classe MainReactor permet d'instancier un objet de type BioReactor et un objet de type ComputerBio.
+
+    La classe abstraite Computer permet de représenter un objet possédant un espace de stockage (nommé hardDrive) pour stocker les données du bio-réacteur.
+
+    La classe ComputerBio permet d'ajouter à un objet de Computer, une liste de serveurs TCP. Elle fait le lien réseau entre le bio-réacteur
+    et les serveursTCP.
+
+    La classe BioReactor représente un objet bio-réacteur, possédant pour attributs un ensemble de variables, représentant
+    l'ensemble des grandeurs d'intérêt du bio-réacteur.
+    La méthode readingFile() permet de lire la ligne suivante du fichier .xlsx et d'attribuer les valeurs des grandeurs aux
+    instances du bio-réacteur.
+    La méthode transmit() permet d'envoyer l'ensembles des données du bioréacteur aux serveurs TCP, en utilisant readingFile()
+    et la méthode toString().
+
+    La classe ServeurTCP permet d'établir une connexion socket avec un serveur client, instance de la classe ServeurClient du
+    package packageClient.
+    Afin d'implémenter les patterns ServeurTCP Concurrent et Strategy, les instances d'un serveur TCP sont un protocole, un contexte
+    et un nombre de connexions maximum.
+    Lors de l'instanciation du serveur, la méthode run() est appelée, elle permet de créer un serveurSocket et d'accepter les
+    demandes de connexions clientes. Elle instancie un objet de la classe ConnectedClientThread afin d'implanter le pattern ServetTCP Concurrent.
+
+    La classe ConnectedClientThread permet d'implémenter le pattern ServeurTCP Concurrent en executant un protocole selon le choix
+    de la stratégie d'envoie des données (envoie complet ou envoie temporisé toutes les 5 secondes).
+
+    La classe ProtocoleSendState interface l'interface IProtocole, et permet d'envoyer l'état du bioréacteur. Elle est appelée
+    de manière différente selon le choix du client d'utiliser un RequestStateComplete ou un RequestStateTemporize.
+
+    - Description du package packageClient
+
+    La classe MainClient permet d'instancier un objet de type ComputerClient et un objet de type ClientGUI.
+
+    La classe ComputerClient associe à un objet de type Computer, un serveur client. Elle fait le lien entre l'interface graphique et
+    la partie réseau.
+
+    La classe ServeurClient représente un serveur TCP client, avec une méthode permettant de se connecter à un serveur TCP, connecterAuServeur(),
+    une méthode permettant d'envoyer une demande d'état, send(), et une méthode pour se déconnecter ddu serveur TCP, deconnecterDuServeur().
+
+    La classe ClientGUI représente l'interface graphique pour un client. Cette classe implémente le pattern Observer/ Observable
+    en étant l'observateur du sujet ComputerBio.
+    Ce pattern est implanté en utilisant l'interface PropertyChangeListener. Lorsque le computerClient est modifié au niveau de hardDrive,
+    modification déclarée par firePropertyChange() dans les classes RequestStateComplete et RequestStateTemporize, la ClientGUI
+    en est avertie et la méthode propertyChange() s'exécute. On récupère alors les derières données dans le hardDrive du ComputerClient
+    afin de les afficher dans l'UI.
+
+    RequestStateComplete et RequestStateTemporize implante le pattern Strategy en faisant des demandes d'états de manière différente,
+    temporisée ou complètes.
+
+# Authors
+    Alexandre Dermouche
+    Raphael Grisel
+
+
+
+
